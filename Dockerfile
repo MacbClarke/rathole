@@ -13,7 +13,8 @@ RUN cp target/${TARGET}/release/rathole build-out/
 
 
 FROM alpine:3.21
+RUN apk add --no-cache tini
 WORKDIR /app
 COPY --from=builder /home/rust/src/build-out/rathole .
 USER 1000:1000
-ENTRYPOINT ["./rathole"]
+ENTRYPOINT ["/sbin/tini", "--", "./rathole"]
