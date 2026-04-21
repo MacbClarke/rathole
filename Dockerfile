@@ -13,8 +13,9 @@ RUN cp target/${TARGET}/release/rathole build-out/
 
 
 FROM alpine:3.21
-RUN apk add --no-cache tini
+RUN apk add --no-cache tini libcap
 WORKDIR /app
 COPY --from=builder /home/rust/src/build-out/rathole .
+RUN setcap cap_net_bind_service=+ep /app/rathole
 USER 1000:1000
 ENTRYPOINT ["/sbin/tini", "--", "./rathole"]
